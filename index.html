@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kit de Seguimiento Comercial IA</title>
+    
+    <!-- Favicon e Ícono PWA incrustado (Rayo / Energía Comercial) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230ea5e9'/><path d='M55 18L25 55h22l-5 27 28-37H48z' fill='white'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230ea5e9'/><path d='M55 18L25 55h22l-5 27 28-37H48z' fill='white'/></svg>">
+
     <style>
         :root {
             --bg-primary: #0f172a;
@@ -45,6 +50,25 @@
             z-index: 10;
         }
 
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-icon-header {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
         h1 {
             font-size: 1.1rem;
             font-weight: 700;
@@ -83,7 +107,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .card-header {
+        .client-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -291,7 +315,10 @@
 <body>
 
     <header>
-        <h1>Kit Comercial IA</h1>
+        <div class="header-title-container">
+            <div class="app-icon-header">⚡</div>
+            <h1>Kit Comercial IA</h1>
+        </div>
         <div class="logo-badge">LocalFirst</div>
     </header>
 
@@ -344,9 +371,9 @@
                     </div>
                     <div class="form-group">
                         <label>Notas de la Conversación / Objeción</label>
-                        <textarea id="notas" rows="3" placeholder="Ej. Dice que el precio está bien pero lo pensará hasta el viernes."></textarea>
+                        <textarea id="notas" rows="3" placeholder="Ej. Dice que le parecía algo costoso. Le interesa ver una demo el viernes."></textarea>
                     </div>
-                    <button type="submit" class="btn">Guardar Prospecto</button>
+                    <button type="submit" class="btn">💾 Guardar Prospecto</button>
                 </form>
             </div>
         </section>
@@ -411,7 +438,9 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
             document.getElementById(`view-${vista}`).classList.add('active');
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
 
             if (vista === 'hoy') renderHoy();
             if (vista === 'prospectos') renderProspectos();
