@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kit de Seguimiento Comercial IA - Portal del Cliente</title>
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kit Comercial IA">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/whatsapp--v1.png">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0f172a',
+              accent: '#10b981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-card-highlight {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .pulse-glow {
+      box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+    }
+
+    /* Custom Transitions */
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0, 1, 0, 1);
+    }
+    .accordion-content.active {
+      max-height: 1000px;
+      transition: max-height 0.5s ease-in-out;
+    }
+
+    /* Smooth touch interactions */
+    .btn-active:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-12 flex flex-col items-center justify-start px-4 sm:px-6">
+
+  <!-- TOP HEADER -->
+  <header class="w-full max-w-md pt-8 pb-6 text-center">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-sky-400 text-xs font-semibold uppercase tracking-wider mb-3">
+      <i class="fa-solid fa-shield-halved text-emerald-400"></i> Edición Profesional
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+      Kit de Seguimiento <br>
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-teal-300 to-emerald-400">
+        Comercial con IA
+      </span>
+    </h1>
+    <p class="text-slate-400 text-xs sm:text-sm mt-2">
+      Tu portal de bienvenida, sincronización e instalación rápida
+    </p>
+  </header>
+
+  <main class="w-full max-w-md space-y-4">
+
+    <!-- BANNER PWA DE INSTALACIÓN (AUTOMÁTICO) -->
+    <div id="pwa-install-banner" class="hidden glass-card rounded-2xl p-4 border-l-4 border-emerald-500 relative overflow-hidden transition-all duration-300">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg font-bold flex-shrink-0">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">Instalar App en el Celular</h3>
+            <p class="text-xs text-slate-300">Acceso rápido sin escribir URLs</p>
+          </div>
+        </div>
+        <button id="btn-pwa-install" class="btn-active bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl shadow-lg transition-all flex-shrink-0">
+          Instalar
+        </button>
+      </div>
+    </div>
+
+    <!-- INSTRUCCIONES MANUALES IOS (SAFARI) -->
+    <div id="ios-instructions" class="hidden glass-card rounded-2xl p-4 border border-sky-500/30 text-xs text-slate-300 space-y-2">
+      <div class="flex items-center gap-2 text-sky-400 font-bold">
+        <i class="fa-brands fa-apple text-base"></i> Para instalar en tu iPhone:
+      </div>
+      <p>1. Toca el botón <strong>Compartir</strong> <i class="fa-solid fa-share-nodes text-sky-400"></i> en la barra inferior de Safari.</p>
+      <p>2. Selecciona <strong>"Agregar a inicio"</strong> <i class="fa-regular fa-square-plus text-emerald-400"></i>.</p>
+    </div>
+
+    <!-- PASO 1: CLONAR PLANTILLA -->
+    <section class="glass-card-highlight rounded-2xl p-5 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-6 -top-6 w-24 h-24 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="flex items-center gap-3 mb-3">
+        <span class="w-7 h-7 rounded-full bg-sky-500 text-slate-950 text-xs font-black flex items-center justify-center">1</span>
+        <h2 class="text-base font-bold text-white">Tu Base de Datos Privada</h2>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+        Guarda una copia personal de la plantilla en tu propia cuenta de Google Drive. TUS clientes son 100% privados.
+      </p>
+
+      <a href="https://docs.google.com/spreadsheets/d/1tvN-IGjen2gQKMBhf840xL8g9AziVwH9I-HGhF9bKZs/copy" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         class="btn-active w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all group">
+        <i class="fa-solid fa-file-circle-plus group-hover:scale-110 transition-transform"></i>
+        <span>1. Clonar Plantilla en Google Drive</span>
+      </a>
+    </section>
+
+    <!-- PASO 2: CONECTAR Y GUARDAR TU FORMULARIO MÓVIL -->
+    <section class="glass-card rounded-2xl p-5 shadow-xl relative">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="w-7 h-7 rounded-full bg-emerald-500 text-slate-950 text-xs font-black flex items-center justify-center">2</span>
+        <h2 class="text-base font-bold text-white">Tu Formulario Móvil</h2>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+        Pega abajo el enlace de tu Web App (obtenido al publicar tu script en 1 clic) para abrirlo siempre desde aquí o desde la App instalada:
+      </p>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            URL de tu Web App Personal:
+          </label>
+          <div class="relative">
+            <input type="url" 
+                   id="user-webapp-url" 
+                   placeholder="https://script.google.com/macros/s/.../exec" 
+                   class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-sky-300 placeholder-slate-600 focus:outline-none focus:border-sky-500 transition-colors pr-9">
+            <button id="btn-save-url" class="absolute right-2 top-1/2 -translate-y-1/2 text-emerald-400 hover:text-emerald-300 p-1 text-sm">
+              <i class="fa-solid fa-floppy-disk"></i>
+            </button>
+          </div>
+        </div>
+
+        <button id="btn-open-app" class="btn-active w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-sm py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all pulse-glow">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>2. Abrir Mi Formulario Comercial</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- PASO 3: GUÍA RÁPIDA DE ACTIVACIÓN (DESPLEGABLE) -->
+    <section class="glass-card rounded-2xl overflow-hidden transition-all border border-slate-800">
+      <button id="accordion-header" class="w-full p-4 text-left flex items-center justify-between gap-2 bg-slate-800/40 hover:bg-slate-800/60 transition-colors">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-200">
+          <i class="fa-solid fa-circle-question text-sky-400"></i>
+          <span>Guía rápida: ¿Cómo obtener mi enlace en 3 clics?</span>
+        </div>
+        <i id="accordion-icon" class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+      </button>
+
+      <div id="accordion-body" class="accordion-content bg-slate-950/40">
+        <div class="p-4 text-xs text-slate-300 space-y-3 border-t border-slate-800/60 leading-relaxed">
+          <p class="text-sky-300 font-medium">Haz este ajuste único de 2 minutos desde una computadora:</p>
+          
+          <div class="flex gap-2">
+            <span class="font-bold text-sky-400">1.</span>
+            <p>En tu plantilla clonada, ve al menú superior: <strong>Extensiones &gt; Apps Script</strong>.</p>
+          </div>
+          
+          <div class="flex gap-2">
+            <span class="font-bold text-sky-400">2.</span>
+            <p>Toca arriba a la derecha en <strong>Implementar &gt; Nueva implementación</strong>.</p>
+          </div>
+
+          <div class="flex gap-2">
+            <span class="font-bold text-sky-400">3.</span>
+            <p>Selecciona <em>Aplicación web</em>, asigna <strong>"Ejecutar como: Yo"</strong> y <strong>"Acceso: Cualquier usuario"</strong>. Haz clic en Implementar, autoriza los permisos de Google, copia el enlace resultante y pégalo arriba.</p>
+          </div>
+
+          <div class="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[11px] text-amber-200/90 mt-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-400 mr-1"></i>
+            <strong>Aviso de Google:</strong> Si ves la pantalla "Google no ha verificado la app", toca en <em>"Configuración avanzada"</em> y luego en <em>"Ir a Proyecto (no seguro)"</em>. Es estándar al usar tus propios scripts privados.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOPORTE -->
+    <footer class="pt-4 text-center">
+      <div class="glass-card rounded-2xl p-4 inline-block w-full">
+        <p class="text-xs text-slate-400 mb-1">¿Tienes alguna pregunta o necesitas ayuda?</p>
+        <a href="mailto:moviolakc@gmail.com?subject=Soporte%20Kit%20Comercial%20IA" 
+           class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors">
+          <i class="fa-solid fa-envelope"></i>
+          <span>Escríbenos a moviolakc@gmail.com</span>
+        </a>
+      </div>
+      <p class="text-[10px] text-slate-600 mt-4">Kit Comercial IA &copy; Todos los derechos reservados</p>
+    </footer>
+
+  </main>
+
+  <!-- NOTIFICACIÓN TOAST CLIENTE -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-emerald-500 text-slate-950 px-4 py-2.5 rounded-full text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 z-50">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-msg">Guardado correctamente</span>
+  </div>
+
+  <script>
+    // ACCORDION TOGGLE LOGIC
+    const accordionHeader = document.getElementById('accordion-header');
+    const accordionBody = document.getElementById('accordion-body');
+    const accordionIcon = document.getElementById('accordion-icon');
+
+    accordionHeader.addEventListener('click', () => {
+      accordionBody.classList.toggle('active');
+      accordionIcon.classList.toggle('rotate-180');
+    });
+
+    // LOCAL STORAGE MANAGEMENT FOR PERSONAL WEB APP URL
+    const urlInput = document.getElementById('user-webapp-url');
+    const saveBtn = document.getElementById('btn-save-url');
+    const openBtn = document.getElementById('btn-open-app');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+
+    function showToast(text) {
+      toastMsg.innerText = text;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    // Load saved URL on startup
+    const savedUrl = localStorage.getItem('kit_comercial_webapp_url');
+    if (savedUrl) {
+      urlInput.value = savedUrl;
+    }
+
+    function saveUrl() {
+      const val = urlInput.value.trim();
+      if (val) {
+        localStorage.setItem('kit_comercial_webapp_url', val);
+        showToast('¡Enlace guardado exitosamente!');
+      } else {
+        localStorage.removeItem('kit_comercial_webapp_url');
+        showToast('Enlace removido');
+      }
+    }
+
+    saveBtn.addEventListener('click', saveUrl);
+    urlInput.addEventListener('change', saveUrl);
+
+    openBtn.addEventListener('click', () => {
+      const url = urlInput.value.trim() || localStorage.getItem('kit_comercial_webapp_url');
+      if (url) {
+        window.open(url, '_blank');
+      } else {
+        showToast('Pega primero tu enlace en el campo');
+        urlInput.focus();
+      }
+    });
+
+    // PWA INSTALLATION LOGIC
+    let deferredPrompt;
+    const pwaBanner = document.getElementById('pwa-install-banner');
+    const installBtn = document.getElementById('btn-pwa-install');
+    const iosInstructions = document.getElementById('ios-instructions');
+
+    // Detect iOS Safari
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIos && !isStandalone) {
+      iosInstructions.classList.remove('hidden');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaBanner.classList.remove('hidden');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        pwaBanner.classList.add('hidden');
+      }
+      deferredPrompt = null;
+    });
+
+    // SERVICE WORKER REGISTRATION FOR FULL PWA FUNCTIONALITY
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swContent = `
+          const CACHE_NAME = 'kit-comercial-v1';
+          self.addEventListener('install', e => {
+            e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./'])));
+          });
+          self.addEventListener('fetch', e => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
+        `;
+        const blob = new Blob([swContent], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(err => console.log('SW Registration ignored', err));
+      });
+    }
+  </script>
+</body>
+</html>
