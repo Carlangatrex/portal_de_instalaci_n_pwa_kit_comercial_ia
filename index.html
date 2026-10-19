@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://img.icons8.com; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self';">
+  <title>Kit Comercial IA - App Móvil</title>
+  
+  <!-- Mobile & PWA Meta Tags -->
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Kit Comercial IA">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/color/180/whatsapp--v1.png">
+  <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/whatsapp--v1.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              dark: '#0b0f19',
+              card: '#161e2e',
+              border: 'rgba(255, 255, 255, 0.08)',
+              emerald: '#10b981',
+              cobalt: '#2563eb',
+              sky: '#38bdf8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .glass-card {
+      background: rgba(22, 30, 46, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-input {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .glass-input:focus {
+      border-color: #38bdf8;
+      outline: none;
+    }
+
+    .btn-touch:active {
+      transform: scale(0.96);
+    }
+
+    /* Hide scrollbars for clean app feel */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-24 text-slate-100 antialiased">
+
+  <!-- ACCESO RESTRINGIDO -->
+  <div id="access-gate" class="fixed inset-0 z-[100] bg-[#0b0f19]/98 backdrop-blur-sm flex items-center justify-center hidden">
+    <div class="glass-card rounded-2xl p-8 w-full max-w-sm text-center">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-sm shadow-md mx-auto mb-4">
+        <i class="fa-solid fa-key"></i>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-2">Acceso al Kit Comercial</h2>
+      <p class="text-sm text-slate-400 mb-6">Ingresa la clave de acceso proporcionada al comprar.</p>
+      <input type="password" id="access-input" placeholder="Clave de acceso" class="w-full glass-input rounded-xl px-3 py-2 text-white mb-4">
+      <button id="btn-access" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-bold py-2 rounded-xl">Ingresar</button>
+      <p id="access-error" class="text-[11px] text-rose-400 mt-2 hidden">Clave incorrecta.</p>
+      <p class="text-[10px] text-slate-500 mt-6">Protección básica. No compartas esta clave.</p>
+    </div>
+  </div>
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-30 bg-[#0b0f19]/90 backdrop-blur-md px-4 py-3 border-b border-slate-800/80 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-sm shadow-md">
+        <i class="fa-solid fa-bolt"></i>
+      </div>
+      <div>
+        <h1 class="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5">
+          Kit Comercial <span class="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-emerald-400">IA</span>
+        </h1>
+        <p class="text-[10px] text-slate-400 font-medium">Base de Datos Local &bull; 100% Privada</p>
+      </div>
+    </div>
+
+    <!-- PWA Install Small Button (If prompt active) -->
+    <button id="btn-header-install" class="hidden btn-touch bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+      <i class="fa-solid fa-download text-xs"></i>
+      <span>Instalar</span>
+    </button>
+  </header>
+
+  <!-- iOS INSTALL BANNER NOTICE -->
+  <div id="ios-notice" class="hidden mx-4 mt-3 p-3 glass-card rounded-xl border border-sky-500/30 text-xs text-slate-300 relative">
+    <button onclick="document.getElementById('ios-notice').remove()" class="absolute top-2 right-2 text-slate-400 hover:text-white p-1">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="flex items-center gap-2 text-sky-400 font-bold mb-1">
+      <i class="fa-brands fa-apple text-sm"></i> Instalar en iPhone / iPad:
+    </div>
+    <p class="text-[11px] leading-tight">
+      Toca el botón <strong>Compartir</strong> <i class="fa-solid fa-share-nodes text-sky-400"></i> en Safari y selecciona <strong>"Agregar a inicio"</strong> <i class="fa-regular fa-square-plus text-emerald-400"></i>.
+    </p>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-lg w-full mx-auto px-4 pt-4">
+
+    <!-- SECCIÓN 1: HOY (AGENDA DEL DÍA) -->
+    <section id="sec-hoy" class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-calendar-check text-emerald-400"></i>
+            <span>Seguimientos de Hoy</span>
+          </h2>
+          <p class="text-xs text-slate-400" id="hoy-date-subtitle">Cargando fecha...</p>
+        </div>
+        <span id="badge-hoy-count" class="px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-extrabold text-xs">
+          0 pendientes
+        </span>
+      </div>
+
+      <!-- LISTA HOY -->
+      <div id="container-hoy" class="space-y-3">
+        <!-- Generado dinámicamente -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: PROSPECTOS (LISTA COMPLETA) -->
+    <section id="sec-prospectos" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-users text-sky-400"></i>
+          <span>Todos los Prospectos</span>
+        </h2>
+        <span id="total-prospectos-count" class="text-xs font-semibold text-slate-400">0 registros</span>
+      </div>
+
+      <!-- Buscador y Filtro -->
+      <div class="space-y-2">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+          <input type="text" id="input-search" placeholder="Buscar por nombre, teléfono o notas..." 
+                 class="w-full glass-input rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500">
+        </div>
+
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+          <button class="filter-chip active btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-sky-500 text-slate-950 flex-shrink-0" data-filter="TODOS">Todos</button>
+          <button class="filter-chip btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" data-filter="Nuevo">Nuevos</button>
+          <button class="filter-chip btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" data-filter="Cotizado">Cotizados</button>
+          <button class="filter-chip btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" data-filter="En Seguimiento">En Seguimiento</button>
+          <button class="filter-chip btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" data-filter="Cerrado">Cerrados</button>
+          <button class="filter-chip btn-touch px-3 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" data-filter="Descartado">Descartados</button>
+        </div>
+      </div>
+
+      <!-- LISTA COMPLETA -->
+      <div id="container-prospectos" class="space-y-3">
+        <!-- Generado dinámicamente -->
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: NUEVO PROSPECTO / EDITAR -->
+    <section id="sec-nuevo" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 id="form-title" class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-emerald-400"></i>
+          <span>Registrar Nuevo Prospecto</span>
+        </h2>
+        <button id="btn-cancel-edit" class="hidden text-xs text-rose-400 hover:text-rose-300 font-semibold">
+          Cancelar edición
+        </button>
+      </div>
+
+      <form id="form-prospecto" class="glass-card rounded-2xl p-4 space-y-3.5">
+        <input type="hidden" id="edit-id" value="">
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nombre Completo / Empresa *</label>
+          <input type="text" id="p-nombre" required placeholder="Ej. Carlos Mendoza" 
+                 class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">WhatsApp / Teléfono *</label>
+            <input type="tel" id="p-telefono" required placeholder="Ej. 573001234567" 
+                   class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Servicio de Interés</label>
+            <input type="text" id="p-servicio" placeholder="Ej. Plan Pro / Asesoría" 
+                   class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Estado Actual</label>
+            <select id="p-estado" class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white bg-slate-900">
+              <option value="Nuevo">Nuevo</option>
+              <option value="Cotizado">Cotizado</option>
+              <option value="En Seguimiento" selected>En Seguimiento</option>
+              <option value="Cerrado">Cerrado (Ganado)</option>
+              <option value="Descartado">Descartado</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Próximo Contacto *</label>
+            <input type="date" id="p-fecha" required 
+                   class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white bg-slate-900">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Notas, Detalles u Objeción Principal</label>
+          <textarea id="p-notas" rows="3" placeholder="Ej. Dijo que le parecía algo costoso. Le interesa ver una demo el viernes." 
+                    class="w-full glass-input rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 resize-none"></textarea>
+        </div>
+
+        <button type="submit" id="btn-save-prospecto" class="btn-touch w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold text-sm py-3 rounded-xl shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 transition-all">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Guardar Prospecto</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- SECCIÓN 4: AJUSTES Y RESPALDO -->
+    <section id="sec-ajustes" class="hidden space-y-4">
+      <h2 class="text-lg font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-gears text-sky-400"></i>
+        <span>Ajustes y Respaldos</span>
+      </h2>
+
+      <!-- PWA Manual Install Button (if available) -->
+      <div id="card-pwa-install" class="hidden glass-card rounded-2xl p-4 border-l-4 border-emerald-500 space-y-2">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-mobile-screen text-emerald-400"></i> Instalar App en este Celular
+        </h3>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Accede directo desde tu pantalla de inicio sin usar navegador.
+        </p>
+        <button id="btn-pwa-main-install" class="btn-touch w-full bg-emerald-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl shadow">
+          Instalar Aplicación Ahora
+        </button>
+      </div>
+
+      <!-- Copias de Seguridad -->
+      <div class="glass-card rounded-2xl p-4 space-y-3">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-database text-emerald-400"></i> Gestor de Datos Local
+        </h3>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btn-export-csv" class="btn-touch glass-input hover:bg-slate-800 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700">
+            <i class="fa-solid fa-file-csv text-emerald-400"></i> Exportar a Excel (CSV)
+          </button>
+          <button id="btn-export-json" class="btn-touch glass-input hover:bg-slate-800 text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 border border-slate-700">
+            <i class="fa-solid fa-file-code text-sky-400"></i> Backup JSON
+          </button>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Restaurar Copia de Seguridad (JSON):</label>
+          <input type="file" id="input-import-json" accept=".json" class="hidden">
+          <button id="btn-trigger-import" class="btn-touch w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2 rounded-xl border border-slate-700 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-upload text-amber-400"></i> Cargar Archivo de Respaldo
+          </button>
+        </div>
+      </div>
+
+      <!-- Limpieza de Datos -->
+      <div class="glass-card rounded-2xl p-4 border border-rose-500/20 space-y-2">
+        <h3 class="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro
+        </h3>
+        <p class="text-[11px] text-slate-400">Borra todos los prospectos almacenados en este dispositivo.</p>
+        <button id="btn-clear-all" class="btn-touch w-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold py-2 rounded-xl">
+          Borrar Toda la Base de Datos
+        </button>
+      </div>
+
+      <!-- Guía & Info -->
+      <div class="glass-card rounded-2xl p-4 text-xs text-slate-400 space-y-2">
+        <p class="font-bold text-white">¿Cómo funciona la privacidad?</p>
+        <p class="leading-relaxed">
+          Tus prospectos se guardan únicamente en la memoria interna de tu celular (<code class="text-sky-300">LocalStorage</code>). Nada viaja a servidores externos. Te recomendamos exportar una copia en Excel semanalmente.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#0f172a]/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-2">
+    <div class="max-w-lg mx-auto grid grid-cols-4 gap-1 text-center">
+      
+      <button class="nav-btn active btn-touch flex flex-col items-center justify-center py-1.5 px-2 rounded-xl text-emerald-400 font-bold transition-all" data-target="sec-hoy">
+        <div class="relative">
+          <i class="fa-solid fa-calendar-day text-base"></i>
+          <span id="badge-nav-hoy" class="absolute -top-1.5 -right-2.5 w-4 h-4 bg-emerald-500 text-slate-950 font-black text-[9px] rounded-full flex items-center justify-center hidden">0</span>
+        </div>
+        <span class="text-[10px] mt-1">Hoy</span>
+      </button>
+
+      <button class="nav-btn btn-touch flex flex-col items-center justify-center py-1.5 px-2 rounded-xl text-slate-400 font-medium hover:text-slate-200 transition-all" data-target="sec-prospectos">
+        <i class="fa-solid fa-users text-base"></i>
+        <span class="text-[10px] mt-1">Prospectos</span>
+      </button>
+
+      <button class="nav-btn btn-touch flex flex-col items-center justify-center py-1.5 px-2 rounded-xl text-slate-400 font-medium hover:text-slate-200 transition-all" data-target="sec-nuevo">
+        <i class="fa-solid fa-plus-circle text-base text-sky-400"></i>
+        <span class="text-[10px] mt-1">Nuevo</span>
+      </button>
+
+      <button class="nav-btn btn-touch flex flex-col items-center justify-center py-1.5 px-2 rounded-xl text-slate-400 font-medium hover:text-slate-200 transition-all" data-target="sec-ajustes">
+        <i class="fa-solid fa-sliders text-base"></i>
+        <span class="text-[10px] mt-1">Ajustes</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- MODAL PROMPT IA -->
+  <div id="modal-ia" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="glass-card w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 space-y-4 border-t sm:border border-sky-500/30 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center gap-2 text-sky-400 font-bold text-sm">
+          <i class="fa-solid fa-robot"></i>
+          <span>Prompt de Cierre IA Generado</span>
+        </div>
+        <button id="btn-close-modal-ia" class="text-slate-400 hover:text-white p-1 text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300">
+        Copia este prompt optimizado y pégalo en <strong>ChatGPT</strong>, <strong>Gemini</strong> o tu IA favorita para obtener el mensaje exacto de venta:
+      </p>
+
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 relative">
+        <pre id="prompt-text" class="text-xs text-sky-200 font-mono whitespace-pre-wrap leading-relaxed select-all">Generando...</pre>
+      </div>
+
+      <div class="flex gap-2">
+        <button id="btn-copy-prompt" class="btn-touch flex-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg">
+          <i class="fa-solid fa-copy"></i>
+          <span>Copiar Prompt para IA</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-slate-950 px-4 py-2 rounded-full text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center gap-2 z-50">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toast-msg font-bold">Guardado con éxito</span>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // INITIALIZATION & STATE MANAGEMENT
+    const STORAGE_KEY = 'kit_comercial_prospectos_v1';
+    let prospectos = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    let activeFilter = 'TODOS';
+
+    // DOM ELEMENTS
+    const secHoy = document.getElementById('sec-hoy');
+    const secProspectos = document.getElementById('sec-prospectos');
+    const secNuevo = document.getElementById('sec-nuevo');
+    const secAjustes = document.getElementById('sec-ajustes');
+    
+    const containerHoy = document.getElementById('container-hoy');
+    const containerProspectos = document.getElementById('container-prospectos');
+    
+    const badgeHoyCount = document.getElementById('badge-hoy-count');
+    const badgeNavHoy = document.getElementById('badge-nav-hoy');
+    const totalProspectosCount = document.getElementById('total-prospectos-count');
+    const hoyDateSubtitle = document.getElementById('hoy-date-subtitle');
+    
+    const formProspecto = document.getElementById('form-prospecto');
+    const formTitle = document.getElementById('form-title');
+    const editIdInput = document.getElementById('edit-id');
+    const btnCancelEdit = document.getElementById('btn-cancel-edit');
+    
+    const inputSearch = document.getElementById('input-search');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-msg');
+
+    // HELPER: Get Today's Date YYYY-MM-DD in local time
+    function getTodayString() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // HELPER: Format date for display
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Sin fecha';
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    // SHOW TOAST
+    function showToast(text) {
+      toast.children[1].innerText = text;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('opacity-0', 'pointer-events-none'), 2400);
+    }
+
+    // SAVE TO LOCALSTORAGE
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(prospectos));
+      renderAll();
+    }
+
+    // STATUS BADGE COLOR HELPER
+    function getStatusBadgeClass(estado) {
+      switch (estado) {
+        case 'Nuevo': return 'bg-sky-500/10 text-sky-400 border-sky-500/30';
+        case 'Cotizado': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        case 'En Seguimiento': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+        case 'Cerrado': return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+        case 'Descartado': return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+        default: return 'bg-slate-800 text-slate-300 border-slate-700';
+      }
+    }
+
+    // HELPER: Sanitizar HTML para prevenir XSS
+    function escapeHtml(text) {
+      if (text == null) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // CREATE PROSPECT CARD HTML
+    function createCardHTML(p) {
+      const isOverdue = p.fechaProximo && p.fechaProximo < getTodayString() && p.estado !== 'Cerrado' && p.estado !== 'Descartado';
+      const cleanPhone = p.telefono.replace(/\D/g, '');
+      const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hola ${p.nombre}, ¿cómo estás? Te escribo para darle seguimiento a lo que conversamos.`)}`;
+
+      return `
+        <div class="glass-card rounded-2xl p-4 space-y-3 relative overflow-hidden transition-all border ${isOverdue ? 'border-amber-500/40 bg-amber-950/10' : ''}">
+          ${isOverdue ? '<div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-bl-lg">VENCIDO</div>' : ''}
+          
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-bold text-white flex items-center gap-1.5">
+                ${escapeHtml(p.nombre)}
+              </h3>
+              <p class="text-[11px] text-slate-400 flex items-center gap-2 mt-0.5">
+                <span><i class="fa-solid fa-briefcase text-slate-500"></i> ${escapeHtml(p.servicio || 'Sin servicio asignado')}</span>
+                <span>&bull;</span>
+                <span><i class="fa-solid fa-phone text-slate-500"></i> ${escapeHtml(p.telefono)}</span>
+              </p>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${getStatusBadgeClass(p.estado)}">
+              ${escapeHtml(p.estado)}
+            </span>
+          </div>
+
+          ${p.notas ? `
+            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 leading-snug">
+              <span class="text-[10px] font-bold uppercase text-slate-500 block mb-0.5">Notas / Objeción:</span>
+              ${escapeHtml(p.notas)}
+            </div>
+          ` : ''}
+
+          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/60">
+            <div>
+              <i class="fa-regular fa-clock text-emerald-400"></i>
+              <span>Contacto: <strong>${formatDate(p.fechaProximo)}</strong></span>
+            </div>
+
+            <!-- Acciones secundarias -->
+            <div class="flex items-center gap-2">
+              <button onclick="editProspecto('${p.id}')" class="text-sky-400 hover:text-sky-300 font-semibold text-xs flex items-center gap-1">
+                <i class="fa-solid fa-pen-to-square"></i> Editar
+              </button>
+              <button onclick="deleteProspecto('${p.id}')" class="text-slate-500 hover:text-rose-400 text-xs p-1">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- BOTONES PRINCIPALES DE ACCIÓN -->
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <a href="${waLink}" target="_blank" rel="noopener noreferrer" 
+               class="btn-touch bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 shadow-md">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+              <span>WhatsApp</span>
+            </a>
+
+            <button onclick="openModalIA('${p.id}')" 
+                    class="btn-touch bg-slate-800 hover:bg-slate-700 text-sky-300 border border-sky-500/30 font-bold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
+              <span>Prompt IA</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // RENDER ALL SECTIONS
+    function renderAll() {
+      const todayStr = getTodayString();
+      
+      // Update subtitle date
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      hoyDateSubtitle.innerText = new Date().toLocaleDateString('es-ES', options);
+
+      // Filter Hoy (Proximo contacto <= hoy AND not closed/discarded)
+      const listHoy = prospectos.filter(p => {
+        return p.fechaProximo && p.fechaProximo <= todayStr && p.estado !== 'Cerrado' && p.estado !== 'Descartado';
+      });
+
+      // Render Hoy
+      if (listHoy.length === 0) {
+        containerHoy.innerHTML = `
+          <div class="glass-card rounded-2xl p-6 text-center text-slate-400 space-y-2">
+            <i class="fa-solid fa-circle-check text-3xl text-emerald-400"></i>
+            <h3 class="text-sm font-bold text-white">¡Todo al día por hoy!</h3>
+            <p class="text-xs">No tienes prospectos pendientes de contacto para la fecha de hoy.</p>
+          </div>
+        `;
+      } else {
+        containerHoy.innerHTML = listHoy.map(createCardHTML).join('');
+      }
+
+      // Update Badges
+      badgeHoyCount.innerText = `${listHoy.length} pendientes`;
+      if (listHoy.length > 0) {
+        badgeNavHoy.innerText = listHoy.length;
+        badgeNavHoy.classList.remove('hidden');
+      } else {
+        badgeNavHoy.classList.add('hidden');
+      }
+
+      // Filter All Prospectos
+      const searchTerm = inputSearch.value.toLowerCase().trim();
+      let filteredAll = prospectos.filter(p => {
+        const matchesSearch = p.nombre.toLowerCase().includes(searchTerm) ||
+                              p.telefono.includes(searchTerm) ||
+                              (p.notas && p.notas.toLowerCase().includes(searchTerm)) ||
+                              (p.servicio && p.servicio.toLowerCase().includes(searchTerm));
+        const matchesFilter = (activeFilter === 'TODOS') || (p.estado === activeFilter);
+        return matchesSearch && matchesFilter;
+      });
+
+      totalProspectosCount.innerText = `${filteredAll.length} de ${prospectos.length} registros`;
+
+      // Render All
+      if (filteredAll.length === 0) {
+        containerProspectos.innerHTML = `
+          <div class="glass-card rounded-2xl p-6 text-center text-slate-400 space-y-2">
+            <i class="fa-solid fa-users-slash text-3xl text-slate-600"></i>
+            <h3 class="text-sm font-bold text-white">No hay prospectos</h3>
+            <p class="text-xs">No se encontraron registros con los filtros aplicados.</p>
+          </div>
+        `;
+      } else {
+        containerProspectos.innerHTML = filteredAll.map(createCardHTML).join('');
+      }
+    }
+
+    // FORM SUBMIT (CREATE OR EDIT)
+    formProspecto.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const editId = editIdInput.value;
+      const nombre = document.getElementById('p-nombre').value.trim();
+      const telefono = document.getElementById('p-telefono').value.trim();
+      const servicio = document.getElementById('p-servicio').value.trim();
+      const estado = document.getElementById('p-estado').value;
+      const fechaProximo = document.getElementById('p-fecha').value;
+      const notas = document.getElementById('p-notas').value.trim();
+
+      if (editId) {
+        // Edit existing
+        const index = prospectos.findIndex(p => p.id === editId);
+        if (index !== -1) {
+          prospectos[index] = { ...prospectos[index], nombre, telefono, servicio, estado, fechaProximo, notas };
+          showToast('Prospecto actualizado');
+        }
+      } else {
+        // Create new
+        const newProspecto = {
+          id: 'p_' + Date.now(),
+          nombre,
+          telefono,
+          servicio,
+          estado,
+          fechaProximo,
+          notas,
+          createdAt: new Date().toISOString()
+        };
+        prospectos.unshift(newProspecto);
+        showToast('Prospecto registrado');
+      }
+
+      resetForm();
+      saveToStorage();
+      switchTab('sec-prospectos');
+    });
+
+    function resetForm() {
+      formProspecto.reset();
+      editIdInput.value = '';
+      formTitle.innerHTML = `<i class="fa-solid fa-user-plus text-emerald-400"></i> <span>Registrar Nuevo Prospecto</span>`;
+      btnCancelEdit.classList.add('hidden');
+      document.getElementById('p-fecha').value = getTodayString();
+    }
+
+    btnCancelEdit.addEventListener('click', () => {
+      resetForm();
+      switchTab('sec-prospectos');
+    });
+
+    // EDIT PROSPECTO
+    window.editProspecto = function(id) {
+      const p = prospectos.find(item => item.id === id);
+      if (!p) return;
+
+      editIdInput.value = p.id;
+      document.getElementById('p-nombre').value = p.nombre;
+      document.getElementById('p-telefono').value = p.telefono;
+      document.getElementById('p-servicio').value = p.servicio || '';
+      document.getElementById('p-estado').value = p.estado;
+      document.getElementById('p-fecha').value = p.fechaProximo || getTodayString();
+      document.getElementById('p-notas').value = p.notas || '';
+
+      formTitle.innerHTML = `<i class="fa-solid fa-user-pen text-sky-400"></i> <span>Editar Prospecto</span>`;
+      btnCancelEdit.classList.remove('hidden');
+      switchTab('sec-nuevo');
+    };
+
+    // DELETE PROSPECTO
+    window.deleteProspecto = function(id) {
+      if (confirm('¿Estás seguro de eliminar este prospecto?')) {
+        prospectos = prospectos.filter(p => p.id !== id);
+        saveToStorage();
+        showToast('Prospecto eliminado');
+      }
+    };
+
+    // MODAL IA PROMPT GENERATOR
+    const modalIA = document.getElementById('modal-ia');
+    const promptText = document.getElementById('prompt-text');
+    const btnCopyPrompt = document.getElementById('btn-copy-prompt');
+    const btnCloseModalIA = document.getElementById('btn-close-modal-ia');
+
+    window.openModalIA = function(id) {
+      const p = prospectos.find(item => item.id === id);
+      if (!p) return;
+
+      const generatedPrompt = 
+`Actúa como un Asesor Comercial Experto de alto nivel.
+Necesito redactar un mensaje persuasivo, empático y directo para WhatsApp para el siguiente cliente:
+
+- Nombre del cliente: ${p.nombre}
+- Servicio de interés: ${p.servicio || 'Servicio general'}
+- Estado del prospecto: ${p.estado}
+- Objeción / Contexto reciente: ${p.notas || 'Sin notas registradas. Realizar un seguimiento estándar para avanzar el cierre.'}
+
+Por favor, genérame 2 opciones de mensaje de WhatsApp:
+1. Una opción directa orientada a agendar una llamada o cerrar hoy.
+2. Una opción suave enfocada en derribar su objeción con preguntas inteligentes.
+
+Mantén un tono profesional pero conversacional, usando emojis de forma sutil.`;
+
+      promptText.innerText = generatedPrompt;
+      modalIA.classList.remove('hidden');
+    };
+
+    btnCloseModalIA.addEventListener('click', () => modalIA.classList.add('hidden'));
+
+    btnCopyPrompt.addEventListener('click', () => {
+      const text = promptText.innerText;
+      
+      // Clipboard copy handling
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+      
+      showToast('¡Prompt copiado al portapapeles!');
+      modalIA.classList.add('hidden');
+    });
+
+    // BOTTOM NAVIGATION SWITCHING
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const sections = [secHoy, secProspectos, secNuevo, secAjustes];
+
+    function switchTab(targetId) {
+      sections.forEach(sec => {
+        if (sec.id === targetId) {
+          sec.classList.remove('hidden');
+        } else {
+          sec.classList.add('hidden');
+        }
+      });
+
+      navBtns.forEach(btn => {
+        if (btn.getAttribute('data-target') === targetId) {
+          btn.classList.add('text-emerald-400', 'font-bold');
+          btn.classList.remove('text-slate-400', 'font-medium');
+        } else {
+          btn.classList.remove('text-emerald-400', 'font-bold');
+          btn.classList.add('text-slate-400', 'font-medium');
+        }
+      });
+
+      window.scrollTo(0, 0);
+    }
+
+    navBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+        switchTab(target);
+      });
+    });
+
+    // SEARCH & FILTER LISTENERS
+    inputSearch.addEventListener('input', renderAll);
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => {
+          c.classList.remove('bg-sky-500', 'text-slate-950', 'active');
+          c.classList.add('bg-slate-800', 'text-slate-300');
+        });
+        chip.classList.add('bg-sky-500', 'text-slate-950', 'active');
+        chip.classList.remove('bg-slate-800', 'text-slate-300');
+        
+        activeFilter = chip.getAttribute('data-filter');
+        renderAll();
+      });
+    });
+
+    // EXPORT TO EXCEL (CSV)
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+      if (prospectos.length === 0) {
+        showToast('No hay datos para exportar');
+        return;
+      }
+
+      let csv = 'Nombre,Telefono,Servicio,Estado,ProximoContacto,Notas\n';
+      prospectos.forEach(p => {
+        const row = [
+          `"${(p.nombre || '').replace(/"/g, '""')}"`,
+          `"${(p.telefono || '').replace(/"/g, '""')}"`,
+          `"${(p.servicio || '').replace(/"/g, '""')}"`,
+          `"${(p.estado || '').replace(/"/g, '""')}"`,
+          `"${(p.fechaProximo || '').replace(/"/g, '""')}"`,
+          `"${(p.notas || '').replace(/"/g, '""')}"`
+        ];
+        csv += row.join(',') + '\n';
+      });
+
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Prospectos_KitComercial_${getTodayString()}.csv`;
+      a.click();
+      showToast('Archivo CSV descargado');
+    });
+
+    // EXPORT TO JSON
+    document.getElementById('btn-export-json').addEventListener('click', () => {
+      if (prospectos.length === 0) {
+        showToast('No hay datos para exportar');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(prospectos, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `Backup_KitComercial_${getTodayString()}.json`;
+      a.click();
+      showToast('Backup JSON descargado');
+    });
+
+    // IMPORT JSON
+    const inputImportJson = document.getElementById('input-import-json');
+    document.getElementById('btn-trigger-import').addEventListener('click', () => inputImportJson.click());
+
+    inputImportJson.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (Array.isArray(imported)) {
+            prospectos = imported;
+            saveToStorage();
+            showToast('Copia de seguridad restaurada');
+            switchTab('sec-prospectos');
+          } else {
+            alert('El archivo cargado no tiene un formato válido.');
+          }
+        } catch (err) {
+          alert('Error al leer el archivo JSON.');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // CLEAR ALL DATA
+    document.getElementById('btn-clear-all').addEventListener('click', () => {
+      if (confirm('¿ATENCIÓN: Quieres borrar TODOS los prospectos guardados? Esta acción no se puede deshacer.')) {
+        prospectos = [];
+        saveToStorage();
+        showToast('Base de datos borrada');
+      }
+    });
+
+    // PWA INSTALL PROMPT HANDLING
+    let deferredPrompt;
+    const btnHeaderInstall = document.getElementById('btn-header-install');
+    const cardPwaInstall = document.getElementById('card-pwa-install');
+    const btnPwaMainInstall = document.getElementById('btn-pwa-main-install');
+    const iosNotice = document.getElementById('ios-notice');
+
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    if (isIos && !isStandalone) {
+      iosNotice.classList.remove('hidden');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      btnHeaderInstall.classList.remove('hidden');
+      cardPwaInstall.classList.remove('hidden');
+    });
+
+    async function triggerPwaInstall() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        btnHeaderInstall.classList.add('hidden');
+        cardPwaInstall.classList.add('hidden');
+      }
+      deferredPrompt = null;
+    }
+
+    btnHeaderInstall.addEventListener('click', triggerPwaInstall);
+    btnPwaMainInstall.addEventListener('click', triggerPwaInstall);
+
+    // SERVICE WORKER REGISTRATION
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        const swContent = `
+          const CACHE_NAME = 'kit-comercial-app-v1';
+          self.addEventListener('install', e => {
+            e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./'])));
+          });
+          self.addEventListener('fetch', e => {
+            e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+          });
+        `;
+        const blob = new Blob([swContent], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+      });
+    }
+
+    // CONTROL DE ACCESO BÁSICO
+    const ACCESS_KEY = 'kitcomercial2026';
+    const accessGate = document.getElementById('access-gate');
+    const accessInput = document.getElementById('access-input');
+    const btnAccess = document.getElementById('btn-access');
+    const accessError = document.getElementById('access-error');
+
+    function checkAccess() {
+      if (localStorage.getItem('kit_access_granted') === 'true') {
+        accessGate.classList.add('hidden');
+        return;
+      }
+      accessGate.classList.remove('hidden');
+    }
+
+    btnAccess.addEventListener('click', () => {
+      if (accessInput.value === ACCESS_KEY) {
+        localStorage.setItem('kit_access_granted', 'true');
+        accessGate.classList.add('hidden');
+        accessError.classList.add('hidden');
+        accessInput.value = '';
+      } else {
+        accessError.classList.remove('hidden');
+        accessInput.value = '';
+        accessInput.focus();
+      }
+    });
+
+    accessInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') btnAccess.click();
+    });
+
+    // INITIAL SETUP
+    checkAccess();
+    document.getElementById('p-fecha').value = getTodayString();
+    renderAll();
+  </script>
+</body>
+</html>
